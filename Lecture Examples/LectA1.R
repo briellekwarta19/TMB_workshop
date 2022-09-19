@@ -1,9 +1,12 @@
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\Lecture Examples\\")
+setwd('Lecture Examples')
+getwd()
 data <- list(x=rivers)
 parameters <- list(mu=0,logSigma=0)
 
 require(TMB)
+
 compile('LectA1A.cpp', flags="-Wno-ignored-attributes")
+
 dyn.load(dynlib('LectA1A'))
 
 ##################
