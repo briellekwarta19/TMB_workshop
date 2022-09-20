@@ -1,7 +1,4 @@
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\Lecture Examples\\")
-
-
-
+setwd("Lecture Examples")
 
 #==========================================================================================
 

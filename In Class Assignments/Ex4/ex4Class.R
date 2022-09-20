@@ -1,5 +1,5 @@
 
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\In Class Assignments\\Ex4")
+setwd("In Class Assignments\\Ex4")
 
 #devtools::install_github('colemonnahan/adnuts', build_vignettes=TRUE)
 
@@ -134,8 +134,6 @@ MCMCSumm <- function(file,best,Nyear,data,map,parameters)
 
 ################################################################################
 
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\In Class Assignments\\Ex4\\")
-
 require(TMB)
 
 ################################################################################
@@ -185,8 +183,11 @@ Eps <- scan("ex4.pin",skip=9,n=Nyear,quiet=T)
 Fproj <- 0
 
 # Data vector
-data <- list(Nyear=Nyear,Nclass=Nclass,Length=Length,Weight=Weight,X=X,S=S,SurveyS=SurveyS,M=M,
+data <- list(Nyear=Nyear,Nclass=Nclass,Length=Length,Weight=Weight,X=t(X),S=S,SurveyS=SurveyS,M=M,
              CWObs=CWObs,CALObs=CALObs,Neff=Neff,BioIndex=BioIndex,BioSig=BioSig,Nproj=0,Fproj=0)
+
+#### Maybe fix data??? ####
+
 parameters <- list(dummy=0,LogRbar=LogRbar,LogNinit=LogNinit,LogFullF=LogFullF,Eps=Eps)
 # When I was testing the code
 map<-list(LogRbar=factor(NA),LogNinit=rep(factor(NA),Nclass),LogFullF=rep(factor(NA),Nyear),
@@ -213,6 +214,14 @@ print(best)
 rep <- sdreport(model)
 print(rep)
 cat(model$report()$obj_fun,model$report()$LikeCatch,model$report()$LikeCAL,model$report()$LikeBio,model$report()$Penal,"\n")
+
+print(model$report()$N)
+print(model$report()$LikeCatch)
+print(model$report()$BioPred)
+
+print(model$report()$LikeBio)
+print(model$report()$q)
+
 
 ################################################################################
 # Hint Nproj = 20 for projections
