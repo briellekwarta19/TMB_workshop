@@ -1,9 +1,12 @@
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\Lecture Examples\\")
+setwd("Lecture Examples")
 
 hake <- read.table("LectB2.dat", header=TRUE)
 names(hake) <- c("t", "C", "I")
 Nyear <- length(hake$C)
 parameters <- list(logR=-1.1, logK=8.0, logQ=-7.9, logSigma=-2.3,FF=rep(-2,Nyear))
+
+#FF=rep(-2,Nyear) = initializing vector ff
+
 print(parameters)
 
 require(TMB)

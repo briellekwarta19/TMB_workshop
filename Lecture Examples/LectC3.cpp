@@ -5,26 +5,27 @@ template <class Type> Type square(Type x){return x*x;}
 template<class Type>
 Type objective_function<Type>::operator() ()
 {
-  DATA_INTEGER(Nyear)
-  DATA_INTEGER(Nage)
-  DATA_SCALAR(M)
-  DATA_VECTOR(Wght)
-  DATA_SCALAR(SigCatch)
-  DATA_SCALAR(SigCPUE)
-  DATA_SCALAR(Omega)
-  DATA_VECTOR(Catch)
-  DATA_VECTOR(CPUE)
+  DATA_INTEGER(Nyear) //num years
+  DATA_INTEGER(Nage) //num ages
+  DATA_SCALAR(M) // single real number, natural mortaligy 
+  DATA_VECTOR(Wght) //Weight
+  DATA_SCALAR(SigCatch) //sigma catch
+  DATA_SCALAR(SigCPUE) //sigma cpue
+  DATA_SCALAR(Omega) 
+  DATA_VECTOR(Catch) //catch
+  DATA_VECTOR(CPUE) //CPUE
   DATA_MATRIX(Propn)
   // End of data section
 
-  PARAMETER(dummy);
+  PARAMETER(dummy); // dummy parameter
   PARAMETER_VECTOR(LogN);
   PARAMETER(Sel50);
   PARAMETER(Sel95);
-  PARAMETER_VECTOR(LogFish);
-  PARAMETER(logq);
+  PARAMETER_VECTOR(LogFish); //fishability
+  PARAMETER(logq); //catchability 
 
-  matrix<Type> N(Nyear+1,Nage);
+  //Temporary variables
+  matrix<Type> N(Nyear+1,Nage); //Matrix size Num years + 1, Num ages
   matrix<Type> F(Nyear,Nage);
   matrix<Type> Z(Nyear,Nage);
   vector<Type> S(Nage);
@@ -35,6 +36,7 @@ Type objective_function<Type>::operator() ()
   matrix<Type> PropnPred(Nyear,Nage);
   vector<Type> Bio(Nyear);
 
+  // Likelihood components
   Type Like1;
   Type Like2;
   Type Like3;
@@ -56,7 +58,7 @@ Type objective_function<Type>::operator() ()
      Z(Year,Age) = M + F(Year,Age);
     }
 
-  // Insert all the recritments (watch out for the index pointers)
+  // Insert all the recruitment (watch out for the index pointers)
   for (int Age=0;Age<Nage;Age++) N(0,Age) = exp(LogN(Nage-Age-1));
   for (int Year=1;Year<Nyear;Year++) N(Year,0) = exp(LogN(Nage+Year-1));
   N(Nyear,0) = 0;
@@ -79,7 +81,7 @@ Type objective_function<Type>::operator() ()
       TotCAA += PropnPred(Year,Age);
      }
     CPUEPred(Year) = exp(logq)*Bio(Year);
-    for (int Age=0;Age<Nage;Age++) PropnPred(Year,Age) /= TotCAA;
+    for (int Age=0;Age<Nage;Age++) PropnPred(Year,Age) /= TotCAA; // /= 
    }
 
   // Likelihood components

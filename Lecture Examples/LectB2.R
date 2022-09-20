@@ -1,4 +1,4 @@
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\Lecture Examples\\")
+setwd("Lecture Examples")
 
 hake <- read.table("LectB2.dat", header=TRUE)
 names(hake) <- c("t", "C", "I")
@@ -12,12 +12,18 @@ dyn.load(dynlib("LectB2"))
 
 ################################################################################
 
-model <- MakeADFun(hake, parameters,DLL="LectB2",control=list(eval.max=10000,iter.max=1000,rel.tol=1e-15),silent=T)
+model <- MakeADFun(hake, parameters,DLL="LectB2",
+                   control=list(eval.max=10000, #control ensures to stop the problem
+                                iter.max=1000,
+                                rel.tol=1e-15),
+                   silent=T)
+
 print(attributes(model))
 
 fit <- nlminb(model$par, model$fn, model$gr)
 for (i in 1:3)
  fit <- nlminb(model$env$last.par.best, model$fn, model$gr)
+              #STOP AT THE BEST VALUE, then start again at best value
 
 rep <- sdreport(model)
 
@@ -40,6 +46,6 @@ lines(Ihat~t, hake)
 ################################################################################
 
 # Do a likelihood profile
-prof <- tmbprofile(model,"logR",trace=F)
+prof <- tmbprofile(model,"logR",trace=F) #does a likelihood profile!
 plot(prof)
 print(confint(prof,leve=0.1))

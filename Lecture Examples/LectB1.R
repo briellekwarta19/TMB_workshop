@@ -1,5 +1,5 @@
 library(TMB)
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\Lecture Examples\\")
+setwd("Lecture Examples")
 parameters <- c(x=1)
 m1 <- matrix(c(1,2,3,4),ncol=2,nrow=2)
 m2 <- matrix(c(1,2,3,4,5,6),ncol=3,nrow=2)

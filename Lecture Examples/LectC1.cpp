@@ -14,6 +14,8 @@ Type objective_function<Type>::operator() ()
  vector<Type> mu = X*Beta;
 
  nll = - dnorm(Y, mu, exp(ln_sd), true).sum();
+ 
+ // Creating a new y dataset using my and sd estimate
  SIMULATE{
    Y = rnorm(mu,exp(ln_sd));
    REPORT(Y);

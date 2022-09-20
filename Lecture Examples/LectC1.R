@@ -1,7 +1,7 @@
 library(TMB)
 library(gap)
 library(DHARMa)
-
+setwd("Lecture Examples")
 set.seed(888)
 Ndata <- 20
 Beta2 <- c(1,2)
@@ -17,12 +17,13 @@ opt <- nlminb(obj$par,obj$fn,obj$gr);
 print(sdreport(obj))
 
 # simulate data
+#simulate data using 500 replicates of the simulation function in TMB
 y.sim <- replicate(500,{obj$simulate()$Y})
 
 n.obs <- length(Y)
 sim.resid <- rep(NA, n.obs)
 for (i in 1:n.obs)
- sim.resid[i] <- ecdf(y.sim[i,])(Y[i])
+ sim.resid[i] <- ecdf(y.sim[i,])(Y[i]) #empirical cumulative distribution function
 print(sim.resid)
  
 p.val <- ks.test(sim.resid,'punif')$p.value

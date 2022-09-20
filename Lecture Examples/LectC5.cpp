@@ -4,6 +4,7 @@ template <class Type>
 vector<Type> myline(vector<Type> x, Type a, Type b){return a+b*x;}
 
 // R-interface til sub-funktion
+// turns types into r types instead of c++ types
 extern "C" SEXP call_myline(SEXP x, SEXP a, SEXP b){ 
   vector<double> y = myline(asVector<double>(x), (double)*REAL(a), (double)*REAL(b));
   return asSEXP(y);

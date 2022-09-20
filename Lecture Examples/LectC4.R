@@ -1,4 +1,4 @@
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\Lecture Examples\\")
+setwd("Lecture Examples")
 data <- read.table("LectA2.dat", header=TRUE)
 parameters <- list(b0=0, b1=0, logSigma=0)
 

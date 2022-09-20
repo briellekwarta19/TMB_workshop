@@ -1,5 +1,4 @@
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\Lecture Examples\\")
-
+setwd("Lecture Examples")
 
 library(TMB)
 compile("LectC5.cpp",libinit=FALSE, flags="-Wno-ignored-attributes")                    ## notice flag

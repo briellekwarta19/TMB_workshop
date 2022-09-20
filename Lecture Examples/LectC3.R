@@ -1,4 +1,4 @@
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\Lecture Examples\\")
+setwd("Lecture Examples")
 
 
 
@@ -61,6 +61,13 @@ xx <- model$fn(model$env$last.par)
 
 # Actual minimzation (with some "Bonus" parameters from nlminb)
 fit <- nlminb(model$par, model$fn, model$gr, control=list(eval.max=100000,iter.max=1000))
+
+#Example of putting lower bounds on all parameters
+fit <- nlminb(model$par, model$fn, model$gr,
+              control=list(eval.max=100000,iter.max=1000), 
+              lower = rep(-Inf, length(model$par)))
+
+
 best <- model$env$last.par.best
 rep <- sdreport(model)
 print(best)
@@ -70,6 +77,5 @@ print(model$report()$N)
 print(model$report()$CPUEPred)
 cat(model$report()$obj_fun,model$report()$Like1,model$report()$Like2,model$report()$Like3,"\n")
 rep <- sdreport(model)
-print(summary(rep))
-
+print(summary(rep)) 
 

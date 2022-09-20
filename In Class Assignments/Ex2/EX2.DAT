@@ -1,7 +1,3 @@
-# Number of prey species
-3
-# Number of rows of data
-100
 Predator Prey1    Prey2    Prey3     Consump_of_prey1 Consump_of_prey2 Consump_of_prey3
 1.20894 0.5615064 1.999467 0.3161716 1.142174 2.151871 0.4517236
 1.635633 1.282741 0.7586465 1.708764 1.444159 2.848352 0.433343
