@@ -81,7 +81,7 @@ Type objective_function<Type>::operator() ()
      {
       N(Iyear+1,Iclass) = 0;
       for (int Jclass=0;Jclass<Nclass;Jclass++)
-       N(Iyear+1,Iclass) += N(Iyear,Jclass)*exp(-Z(Iyear,Jclass))*X(Iclass,Jclass);
+       N(Iyear+1,Iclass) += N(Iyear,Jclass)*exp(-Z(Iyear,Jclass))*X(Jclass,Iclass);
      }
 
     // Recruitment (watch for the index for Eps - and N)

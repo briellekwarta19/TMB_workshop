@@ -1,4 +1,4 @@
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\In Class Assignments\\Ex6")
+#setwd("In Class Assignments/Ex6")
 
 # ========================================================================================================
 
@@ -21,11 +21,11 @@ DoPlots <- function(hake)
 require(TMB)
 compile("Ex6Class.cpp", flags="-Wno-ignored-attributes")
 dyn.load(dynlib("Ex6Class"))
-compile("Ex6.cpp", flags="-Wno-ignored-attributes")
-dyn.load(dynlib("Ex6"))
+# compile("Ex6Class.cpp", flags="-Wno-ignored-attributes")
+# dyn.load(dynlib("Ex6"))
 
 # Don't plot stuff
-Plot <- F
+Plot <- T
 par(mfrow=c(3,4))
 
 # specifications of the operating model
@@ -69,16 +69,16 @@ for (Isim in 1:Nsim)
 
    # Fit the observation error estimator (class version)
    parameters <- list(logR=-1.1, logK=10.0, logQ1=-7.9, logQ2=-7.9, logSigma=log(SigmaI),FF=rep(-2,Nyear),Eps=rep(0,Nyear),LogSigmaR=-1)
-   #map <- list(Eps=rep(factor(NA),Nyear),LogSigmaR=factor(NA),logSigma=factor(NA),logQ2=factor(NA))
-   #model <- MakeADFun(hake, parameters,DLL="Ex6Class",map=map,control=list(eval.max=10000,iter.max=1000,rel.tol=1e-15),silent=T)
-   #fit <- nlminb(model$par, model$fn, model$gr)
-   #for (i in 1:3) fit <- nlminb(model$env$last.par.best, model$fn, model$gr)
-   #rep <- sdreport(model)
-   #print(summary(rep))
+   map <- list(Eps=rep(factor(NA),Nyear),LogSigmaR=factor(NA),logSigma=factor(NA),logQ2=factor(NA))
+   model <- MakeADFun(hake, parameters,DLL="Ex6Class",map=map,control=list(eval.max=10000,iter.max=1000,rel.tol=1e-15),silent=T)
+   fit <- nlminb(model$par, model$fn, model$gr)
+   for (i in 1:3) fit <- nlminb(model$env$last.par.best, model$fn, model$gr)
+   rep <- sdreport(model)
+   print(summary(rep))
 
    # Fit the observation error estimator (final version)
    map <- list(Eps=rep(factor(NA),Nyear),LogSigmaR=factor(NA),logSigma=factor(NA))
-   model <- MakeADFun(hake, parameters,DLL="Ex6",map=map,control=list(eval.max=10000,iter.max=1000,rel.tol=1e-15),silent=T)
+   model <- MakeADFun(hake, parameters,DLL="Ex6Class",map=map,control=list(eval.max=10000,iter.max=1000,rel.tol=1e-15),silent=T)
    fit <- nlminb(model$par, model$fn, model$gr)
    for (i in 1:3) fit <- nlminb(model$env$last.par.best, model$fn, model$gr)
    rep <- sdreport(model)
@@ -88,25 +88,30 @@ for (Isim in 1:Nsim)
    Estimates[1,Isim,2] <- Report$B[Nyear+1]
    Estimates[1,Isim,3] <- Report$B[Nyear+1]/Report$k
    if (Plot==T) DoPlots(hake)
+   
 
    # Fit the state space model (errors in variables)
    map <- list(LogSigmaR=factor(NA),logSigma=factor(NA))
    parameters <- list(logR=-1.1, logK=10.0, logQ1=-7.9, logQ2=-7.9, logSigma=log(SigmaI),FF=rep(-2,Nyear),Eps=rep(0,Nyear),LogSigmaR=-1)
-   model <- MakeADFun(hake, parameters,DLL="Ex6",map=map,control=list(eval.max=10000,iter.max=1000,rel.tol=1e-15),silent=T)
+   model <- MakeADFun(hake, parameters,DLL="Ex6Class",map=map,control=list(eval.max=10000,iter.max=1000,rel.tol=1e-15),silent=T)
+   
+   print(model$report())
+   
    fit <- nlminb(model$par, model$fn, model$gr)
-   for (i in 1:3) fit <- nlminb(model$env$last.par.best, model$fn, model$gr)
+   for (i in 1:100) fit <- nlminb(model$env$last.par.best, model$fn, model$gr)
    rep <- sdreport(model)
    print(summary(rep))
    Report <- model$report()
    Estimates[2,Isim,1] <- Report$r*Report$k/4.0
    Estimates[2,Isim,2] <- Report$B[Nyear+1]
    Estimates[2,Isim,3] <- Report$B[Nyear+1]/Report$k
+   
    if (Plot==T) DoPlots(hake)
 
    # Fit the state space model (Random effects)
    map <- list(logSigma=factor(NA))
    parameters <- list(logR=-1.1, logK=10.0, logQ1=-7.9, logQ2=-7.9, logSigma=log(SigmaI),FF=rep(-2,Nyear),Eps=rep(0,Nyear),LogSigmaR=-1)
-   model <- MakeADFun(hake, parameters,DLL="Ex6",map=map,random="Eps",control=list(eval.max=10000,iter.max=1000,rel.tol=1e-15),silent=T)
+   model <- MakeADFun(hake, parameters,DLL="Ex6Class",map=map,random="Eps",control=list(eval.max=10000,iter.max=1000,rel.tol=1e-15),silent=T)
    fit <- nlminb(model$par, model$fn, model$gr)
    Index <- which(names(model$env$last.par.best)!="Eps")
    for (i in 1:3) fit <- nlminb(model$env$last.par.best[Index], model$fn, model$gr)

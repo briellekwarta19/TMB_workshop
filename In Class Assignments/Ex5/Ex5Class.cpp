@@ -29,6 +29,7 @@ Type objective_function<Type>::operator() ()
   Type beta;
   Type BH;
   Type obj_fun;
+  matrix<Type> BHout(Tmax,m);
   // End of the temporary variables
 
   // Transform the parameters
@@ -40,9 +41,24 @@ Type objective_function<Type>::operator() ()
  for (int k=0;k<m;k++) {
 
    // Extract beta and define h
-
+   beta = mu + tau*eta(k);
+   
+   h(k) = (exp(beta + 0.2))/ (exp(beta + 1.0));
+  
+   for(int t = 0; t < Tmax; t++){
+     BH = (4.0 * R0(k) * h(k) * B(k,t))/((Phi0(k)*R0(k)*(1.0-h(k)))+ (5.0*h(k)-1.0)*B(k,t));
+      
+     BHout(t,k) = BH;
    // Likelihood
+   
+   obj_fun += square(log(R(k,t))-log(BH) + square(SigR(k))/2.0)/(square(SigR(k))) + log(SigR(k));
+   
    }
+   
+   obj_fun -= dnorm(eta(k), Type(0), Type(1), true);
+
+   
+  }
 
 
 
@@ -50,6 +66,7 @@ Type objective_function<Type>::operator() ()
   ADREPORT(h);
   ADREPORT(R0);
   ADREPORT(tau);
+  REPORT(BHout);
 
   return(obj_fun);
 }

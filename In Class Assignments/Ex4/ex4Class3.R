@@ -1,4 +1,4 @@
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\In Class Assignments\\Ex4")
+setwd("In Class Assignments\\Ex4")
 
 # =================================================================================================================
 
@@ -144,13 +144,46 @@ MCMCSumm <- function(file,best,Nyear,data,map,parameters)
   
   # Projection    
   # ==========
+  Nproj <- 20
+  fproj_vect <- seq(0,0.7, by = 0.05)
+  fproj_res <- rep(NA, length(fproj_vect))
   
-  # hahaha - this is for you!
+  for(i in 1:length(fproj_vect)){
+    # Data vector
+    data <- list(Nyear=Nyear,Nclass=Nclass,Length=Length,Weight=Weight,X=X,S=S,SurveyS=SurveyS,M=M,
+                 CWObs=CWObs,CALObs=CALObs,Neff=Neff,BioIndex=BioIndex,BioSig=BioSig,Nproj=Nproj,Fproj=fproj_vect[i])
+    
+    parameters <- list(dummy=0,LogRbar=LogRbar,LogNinit=LogNinit,LogFullF=LogFullF,Eps=Eps)
+    
+    model <- MakeADFun(data, parameters, DLL="Ex4",silent=T,map=map,hessian=T)
+    
+    # test code - for checking for minimization
+    xx <- model$fn(model$env$last.par)
+  
+  # Extract biomass and plot
+  Biomass <- matrix(0,nrow=Nsim,ncol=Nyear+Nproj)
+  for (Isim in 1:Nsim)
+  { xx <- model$fn(post1[Isim,]); Biomass[Isim,] <- model$report()$BioPred[1:(Nyear+Nproj)]; }  
+  quant <- matrix(0,nrow=5,ncol=Nyear+Nproj)
+  for (Iyear in 1:(Nyear+Nproj))
+    quant[,Iyear] <- quantile(Biomass[,Iyear],probs=c(0.05,0.25,0.5,0.75,0.95))  
+  Years <- 1:(Nyear+Nproj)
+  
+  B45_prop <- sum(Biomass[,Nyear+Nproj] > 1000)/Nsim
+  fproj_res[i] <- B45_prop
+  }
+  
+  plot(fproj_vect, fproj_res)
+  return(fproj_res)
 }  
+
+Fproj50 <- MCMCSumm("post2.RData",model$env$last.par.best,Nyear,data,map,parameters)
+
+Fproj50
 
 ################################################################################
 
-setwd("C:\\courses\\FISH 559_22\\TMB Workshop\\In Class Assignments\\Ex4\\")
+setwd("In Class Assignments\\Ex4")
 
 require(TMB)
 
